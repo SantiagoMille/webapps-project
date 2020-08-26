@@ -1,0 +1,55 @@
+<template>
+  <v-app>
+    <!-- <navigation></navigation> -->
+    
+      <router-view></router-view>
+    
+<!--     <footer-bar></footer-bar>-->
+  </v-app>
+</template>
+
+<script>
+
+export default {
+  name: 'App',
+
+  components: {
+    
+  },
+
+  data: () => ({
+    //
+  }),
+};
+</script>
+
+<style lang="scss">
+#app {
+  font-family: Avenir, Verdana, Arial, serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: lighter;
+  text-align: center;
+  color: #ffffff;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #4C6665;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #334f4e;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #334f4e;
+}
+</style>
