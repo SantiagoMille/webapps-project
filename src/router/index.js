@@ -11,29 +11,14 @@ const router = new VueRouter({
       component: () => import("@/views/Home")
     },
     {
-      path: "/research",
-      name: "Research",
-      component: () => import("@/views/Research")
+      path: "/login",
+      name: "LogIn",
+      component: () => import("@/views/LogIn")
     },
     {
-      path: "/blog",
-      name: "Blog",
-      component: () => import("@/views/Blog")
-    },
-    {
-      path: "/projects",
-      name: "Projects",
-      component: () => import("@/views/Projects")
-    },
-    {
-      path: "/project",
-      name: "Project",
-      component: () => import("@/components/Home/IndProjectPage")
-    },
-    {
-      path: "/interests",
-      name: "Interest",
-      component: () => import("@/views/Interest")
+      path: "/signup",
+      name: "SignUp",
+      component: () => import("@/views/SignUp")
     },
   ],
   mode: "history"

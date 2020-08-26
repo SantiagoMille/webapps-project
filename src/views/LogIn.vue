@@ -1,16 +1,16 @@
 <template>
     <span id='start'>
-        <projects-page/>
+        <Log-in-page/>
     </span>
 </template>
 
 <script>
-import ProjectsPage from '@/components/Home/ProjectsPage';
+import LogInPage from '@/components/LogIn/LogInPage';
 
 export default {
-    name: 'Projects',
+    name: 'LogIn',
     components: {
-        ProjectsPage,
+        LogInPage,
     }
 };
 </script>

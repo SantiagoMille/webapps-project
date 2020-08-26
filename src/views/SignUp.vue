@@ -1,16 +1,16 @@
 <template>
     <span id='start'>
-        <blog-page/>
+        <sign-up-page/>
     </span>
 </template>
 
 <script>
-import BlogPage from '@/components/Home/BlogPage';
+import SignUpPage from '@/components/SignUp/SignUpPage';
 
 export default {
-    name: 'Blog',
+    name: 'SignUp',
     components: {
-        BlogPage,
+        SignUpPage,
     }
 };
 </script>
