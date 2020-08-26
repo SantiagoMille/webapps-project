@@ -40,6 +40,84 @@
               <v-divider></v-divider>
             </v-responsive>
 
+            <span>
+              <form id="app" @submit="checkForm" action="/something" method="post">
+                <table class="center">                
+    
+                  <p v-if="errors.length">
+                    <b>Please check the following error(s):</b>
+                    <ul>
+                      <li :key="error" v-for="error in errors">{{ error }}</li>
+                    </ul>
+                  </p>
+
+                  <tr>
+                    <td>
+                      <label for="name">Full name: </label>
+                    </td>
+                    <td>
+                      <input type="text" name="name" id="name" v-model="name" min="6">
+                    </td>
+                  </tr> 
+                  
+                  <tr>
+                    <td>
+                      <label for="username">Username:</label>
+                    </td>
+                    <td>
+                      <input type="text" name="username" id="username" v-model="username">
+                    </td>
+                  </tr> 
+
+                  <tr>
+                    <td>
+                      <label for="email">Email:</label>
+                    </td>
+                    <td>
+                      <input type="email" name="email" id="email" v-model="email">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <label for="sex">Sex: </label>
+                    </td>
+                    <td style="text-align:start">
+                      <select name="sex" id="sex" v-model="sex">
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                      </select>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <label for="password">Password: </label>
+                    </td>
+                    <td>
+                      <input type="password" name="password" id="password" v-model="password" min="0">
+                    </td>
+                  </tr> 
+
+                  <tr>
+                    <td>
+                      <label for="conformPas">Confirm Password: </label>
+                    </td>
+                    <td>
+                      <input type="password" name="conformPas" id="conformPas" v-model="conformPas" min="0">
+                    </td>
+                  </tr> 
+
+                </table>
+
+                <input class="button" type="submit" value="Submit"> 
+                <br>
+                <p>Already have an account? <a href="./login">Log in</a></p> 
+
+              </form>
+            </span>
+
 
 
           </v-container>
@@ -65,6 +143,24 @@
 <script>
   export default {
     name: 'SignUpPage',
+    data: () => ({
+      errors:[],
+      name:null,
+      username:null,
+      conformPas:null,
+      password:null,
+      sex:null,
+      email:null
+    }),
+    methods:{
+      checkForm:function(e) {
+        if(this.name && this.password) return true;
+        this.errors = [];
+        if(!this.name) this.errors.push("Name required.");
+        if(!this.password) this.errors.push("Password required.");
+        e.preventDefault();
+      }
+    }
   }
 </script>
 
@@ -77,7 +173,11 @@
 .titlee{
   color: white;
 }
-
+.center{
+  margin: auto;
+  align-items: center;
+  text-align: center;
+}
 
 .img{
   max-width: 75%;
@@ -85,9 +185,43 @@
   margin: auto;
 }
 
+.button{
+  background-color: #eeeeee;
+  border: none;
+  border-radius: 10px;
+  color: black;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1vmax;
+}
+
 .black-text{
   color: #6a6a6e;
 }
+
+select,label {
+  color: black !important;
+  font-size: 1.5vmax;
+}
+
+input, select{
+  background: #eeeeee;
+  margin: 5px;
+  color: black;
+}
+
+a, p{
+  font-size: 12px;
+  margin-top: -5px;
+  color: black;
+}
+
+td{
+  text-align: end;
+}
+
 
 @media only screen and (max-width: 800px) {
   .titlee{
