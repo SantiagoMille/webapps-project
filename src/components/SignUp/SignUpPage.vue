@@ -41,7 +41,7 @@
             </v-responsive>
 
             <span>
-              <form id="app" @submit="checkForm" action="/something" method="post">
+              <v-form v-model="valid" id="app">
                 <table class="center">                
     
                   <p v-if="errors.length">
@@ -53,70 +53,104 @@
 
                   <tr>
                     <td>
-                      <label for="name">Full name: </label>
-                    </td>
-                    <td>
-                      <input type="text" name="name" id="name" v-model="name" min="6">
-                    </td>
-                  </tr> 
-                  
-                  <tr>
-                    <td>
-                      <label for="username">Username:</label>
-                    </td>
-                    <td>
-                      <input type="text" name="username" id="username" v-model="username">
+                      <v-text-field
+                        type="text"
+                        id="name"
+                        :rules="nameRules"
+                        v-model="name"
+                        label="Full name"
+                        required                   
+                      ></v-text-field>
                     </td>
                   </tr> 
 
                   <tr>
                     <td>
-                      <label for="email">Email:</label>
+                      <v-text-field
+                        type="text"
+                        id="username"
+                        :rules="usernameRules"
+                        v-model="username"
+                        label="Username"
+                        required                   
+                      ></v-text-field>
                     </td>
+                  </tr> 
+
+                  <tr>
                     <td>
-                      <input type="email" name="email" id="email" v-model="email">
+                      <v-text-field
+                        type="email"
+                        id="email"
+                        :rules="emailRules"
+                        v-model="email"
+                        label="Email"
+                        required                   
+                      ></v-text-field>
+                    </td>
+                  </tr>
+
+                  <v-select
+                    v-model="sex"
+                    :items="sexs"
+                    :rules="[v => !!v || 'Item is required']"
+                    label="Sex"
+                    required
+                  ></v-select>
+
+                  <tr>
+                    <td>
+                      <v-text-field
+                        type="password"
+                        id="password"
+                        v-model="password"
+                        label="Password"
+                        required 
+                        :rules="rules"                  
+                      ></v-text-field>
                     </td>
                   </tr>
 
                   <tr>
                     <td>
-                      <label for="sex">Sex: </label>
-                    </td>
-                    <td style="text-align:start">
-                      <select name="sex" id="sex" v-model="sex">
-                        <option>Male</option>
-                        <option>Female</option>
-                        <option>Other</option>
-                      </select>
+                      <v-text-field
+                        type="password"
+                        id="conformPas"
+                        v-model="conformPas"
+                        label="Confirm Password"
+                        required 
+                        :rules="rules"                  
+                      ></v-text-field>
                     </td>
                   </tr>
-
-                  <tr>
-                    <td>
-                      <label for="password">Password: </label>
-                    </td>
-                    <td>
-                      <input type="password" name="password" id="password" v-model="password" min="0">
-                    </td>
-                  </tr> 
-
-                  <tr>
-                    <td>
-                      <label for="conformPas">Confirm Password: </label>
-                    </td>
-                    <td>
-                      <input type="password" name="conformPas" id="conformPas" v-model="conformPas" min="0">
-                    </td>
-                  </tr> 
 
                 </table>
 
-                <input class="button" type="submit" value="Submit"> 
+                <v-btn :disabled="!valid" class='btn' name="button" @click="checkForm()">Submit</v-btn> 
                 <br>
                 <p>Already have an account? <a href="./login">Log in</a></p> 
 
-              </form>
+              </v-form>
             </span>
+
+            <template>
+              <v-row justify="center">
+                <v-dialog v-model="dialog" persistent max-width="290">
+                  <v-card>
+                    <v-card-title class="headline">Please check the following error(s):</v-card-title>
+                    <v-card-text>
+                      <ul>
+                        <li :key="error" v-for="error in errors">{{ error }}</li>
+                      </ul>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="green darken-1" text @click="dialog = false">OK</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-row>
+            </template>
 
 
 
@@ -141,6 +175,8 @@
 </template>
 
 <script>
+  import router from "../../router/index";
+
   export default {
     name: 'SignUpPage',
     data: () => ({
@@ -150,14 +186,42 @@
       conformPas:null,
       password:null,
       sex:null,
-      email:null
+      dialog:false,
+      valid:false,
+      email:null,
+      rules: [
+        value => !!value || 'Required.',
+        value => (value && value.length >= 7) || 'Min 7 characters',
+      ],
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      ],
+      nameRules: [
+        v => !!v || 'Name is required',
+        v => /[a-zA-Z]+[ ][a-zA-Z ]+/.test(v) || 'Name must be valid',
+      ],
+      usernameRules: [
+        v => !!v || 'Name is required',
+        v => /[a-zA-Z0-9\-./]+/.test(v) || 'Name must be valid',
+      ],
+      sexs: [
+        'Man',
+        'Woman',
+        'Other',
+        'Prefer not to specify',
+      ],
     }),
     methods:{
       checkForm:function(e) {
-        if(this.name && this.password) return true;
         this.errors = [];
+        this.dialog=true;
         if(!this.name) this.errors.push("Name required.");
         if(!this.password) this.errors.push("Password required.");
+        if(this.password!=this.conformPas) this.errors.push("Passwords do not match!");
+        if(this.name && this.password && (this.password==this.conformPas)){
+          router.push('dashboard');
+        }
         e.preventDefault();
       }
     }
@@ -183,6 +247,11 @@
   max-width: 75%;
   max-height: 450px;
   margin: auto;
+}
+
+.btn{
+  color: black !important;
+  margin-bottom: 25px;
 }
 
 .button{

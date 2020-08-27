@@ -20,6 +20,11 @@ const router = new VueRouter({
       name: "SignUp",
       component: () => import("@/views/SignUp")
     },
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: () => import("@/views/Main")
+    },
   ],
   mode: "history"
 });

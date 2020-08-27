@@ -121,7 +121,7 @@
           </v-row>
         </section>
 
-        <section style="background:#dedede" id="about-me">
+        <section class='background' id="about-me">
           <div class="py-12"></div>
 
           <v-container  class="text-center less-margin">
@@ -133,11 +133,8 @@
             </v-responsive>
 
             <v-row class='margin-about'>
-              <v-col cols="12" md="4">
-                <v-img class="img" 
-                contain src="../../assets/mille.jpg"/>
-              </v-col>
-              <v-col class="black-text" cols="12" md="8">
+    
+              <v-col class="black-text" cols="12">
                 <h4 class='aboutPro' id='about'>
                   We aim to be hub where you can find open-source projects about virtually anything:
                 
@@ -235,14 +232,14 @@
   color: #ffd33c;
 }
 
+.background{
+  background:#dedede
+}
+
 .padding-top{
   padding-top: 70px;
   padding-bottom: 0;
   margin-bottom: -5rem; 
-}
-
-.margin-top{
-  margin-top: 3rem;
 }
 
 .v-list-item{
@@ -271,11 +268,6 @@
 
 .less-margin{
   margin: auto;
-}
-
-.margin{
-  margin-top: 0.2rem;
-  margin-bottom: 0.2rem;
 }
 
 .margin-about{

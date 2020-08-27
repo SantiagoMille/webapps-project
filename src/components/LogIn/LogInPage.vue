@@ -41,44 +41,66 @@
             </v-responsive>
 
             <span>
-              <form id="app" @submit="checkForm" action="/something" method="post">
+              <v-form v-model="valid" id="app">
                 <table class="center">                
-    
-                  <p v-if="errors.length">
-                    <b>Please check the following error(s):</b>
-                    <ul>
-                      <li :key="error" v-for="error in errors">{{ error }}</li>
-                    </ul>
-                  </p>
                   
                   <tr>
                     <td>
-                      <label for="name">Username:</label>
-                    </td>
-                    <td>
-                      <input type="text" name="name" id="name" v-model="name">
+                      <v-text-field
+                        type="text"
+                        :rules="rules"
+                        id="name"
+                        v-model="name"
+                        label="Username"
+                        required                      
+                      ></v-text-field>
                     </td>
                   </tr>  
 
                   <tr>
                     <td>
-                      <label for="password">Password: </label>
-                    </td>
-                    <td>
-                      <input type="password" name="password" id="password" v-model="password" min="0">
+                      <v-text-field
+                        type="password"
+                        :rules="rules"
+                        id="password"
+                        v-model="password"
+                        label="Password"
+                        required
+                      ></v-text-field>
                     </td>
                   </tr> 
                     
                 </table>
 
-                <input class="button" type="submit" value="Submit"> 
+                <v-btn class='btn' name="button" @click="checkForm()">Submit</v-btn>
+                <!--<v-btn :disabled="!valid" class='btn' name="button" @click="checkForm()">Submit</v-btn>-->
                 <br>
                 <p>Do not have an account? <a href="./signup">Sign up</a></p>
+                <p>Did you forget you password? <a href="./signup">Reset password</a></p>
 
-              </form>
+              </v-form>
             </span>
 
-
+            <template>
+              <v-row justify="center">
+                <v-dialog v-model="dialog" persistent max-width="290">
+                  <v-card>
+                    <v-card-title v-if="numWrongLog<5" class="headline">Please check the following error(s):</v-card-title>
+                    <v-card-title v-else class="headline">You can no longer try more times, please try again later.</v-card-title>
+                    <v-card-text>
+                      <ul>
+                        <li :key="error" v-for="error in errors">{{ error }}</li>
+                      </ul>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn v-if="numWrongLog<5" color="green darken-1" text @click="dialog = false">OK</v-btn>
+                      <v-btn v-else color="green darken-1" text @click="ok()">OK</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-row>
+            </template>
 
           </v-container>
 
@@ -101,20 +123,37 @@
 </template>
 
 <script>
+  import router from "../../router/index";
+
   export default {
+    
     name: 'LogInPage',
     data: () => ({
       errors:[],
+      dialog:false,
       name:null,
+      valid:false,
+      numWrongLog:0,
       password:null,
+      rules: [
+        value => !!value || 'Required.',
+        value => (value && value.length >= 7) || 'Min 7 characters',
+      ],
     }),
     methods:{
       checkForm:function(e) {
-        if(this.name && this.password) return true;
+        if(this.name && this.password) {
+          router.push('dashboard');
+        }
+        this.dialog=true;
         this.errors = [];
+        this.numWrongLog+=1;
         if(!this.name) this.errors.push("Name required.");
         if(!this.password) this.errors.push("Password required.");
         e.preventDefault();
+      },
+      ok(){
+        router.push('/');
       }
     }
   }
@@ -141,16 +180,9 @@
   margin: auto;
 }
 
-.button{
-  background-color: #eeeeee;
-  border: none;
-  border-radius: 10px;
-  color: black;
-  padding: 5px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 1vmax;
+.btn{
+  color: black !important;
+  margin-bottom: 25px;
 }
 
 .black-text{
@@ -158,7 +190,7 @@
 }
 
 select,label {
-  margin-left: 15px;
+  margin-left: 0px;
   color: black !important;
   font-size: 1.5vmax;
 }
@@ -171,18 +203,18 @@ input, select{
 
 a, p{
   font-size: 12px;
-  margin-top: -5px;
+  margin: -1px;
   color: black;
 }
 
 td{
-  text-align: end;
+  text-align: start;
 }
 
 
 @media only screen and (max-width: 800px) {
   .titlee{
-    font-size: 2.5vmax;
+    font-size: 2.1vmax;
   }
 }
 
