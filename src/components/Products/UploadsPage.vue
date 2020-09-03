@@ -16,11 +16,11 @@
             <v-list-item-title>Profile</v-list-item-title>
           </v-list-item>
 
-          <v-list-item href="./myuploads">
+          <v-list-item href="./myproducts">
             <v-list-item-icon>
-              <v-icon>mdi-cloud-upload</v-icon>
+              <v-icon>mdi-folder-download</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>My uploads</v-list-item-title>
+            <v-list-item-title>My products</v-list-item-title>
           </v-list-item>
 
           <v-list-item href="./dashboard">
@@ -66,8 +66,8 @@
         <v-btn class="bar-b" title="Profile" href='./profile' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
           <v-icon large>mdi-account</v-icon>
         </v-btn>
-        <v-btn class="bar-b" title="Uploads" href='./myuploads' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
-          <v-icon large>mdi-cloud-upload</v-icon>
+        <v-btn class="bar-b" title="Products" href='./myproducts' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
+          <v-icon large>mdi-folder-download</v-icon>
         </v-btn>
         <v-btn class="bar-b" title="Dashboard" href='./dashboard' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
           <v-icon large>mdi-home</v-icon>
@@ -88,7 +88,8 @@
           <v-container class=" container text-center less-margin">
             <h2 class="left black-text font-weight-bold mb-3">Your uploaded projects</h2>
 
-            <v-card v-for="project in user.uploads" :key="project.name" target="_blank" elevation="0.5" max-width="100%">
+            <span v-for="project in user.uploads" :key="project.name">
+            <v-card  target="_blank" elevation="0.5" max-width="100%">
               <v-row>
                 <v-col cols="12">
                   <v-card-title class="text margin_12">
@@ -107,6 +108,8 @@
                 </v-col>
               </v-row>
             </v-card>
+            <br>
+            </span>
 
           </v-container>
           

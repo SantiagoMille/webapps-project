@@ -1,6 +1,6 @@
 <template>
     <span id='start'>
-        <main-page></main-page>
+        <uploads-page/>
         <v-btn
             class='margin'
             absolute
@@ -15,12 +15,12 @@
 </template>
 
 <script>
-import MainPage from '@/components/Main/MainPage';
+import UploadsPage from '@/components/Products/UploadsPage';
 
 export default {
     name: 'Uploads',
     components: {
-        MainPage,
+        UploadsPage,
     }
 };
 </script>

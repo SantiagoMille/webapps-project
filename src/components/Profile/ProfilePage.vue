@@ -143,6 +143,7 @@
               </v-row>
               <v-btn v-if="!edit" class='btn' @click="editB()">Edit</v-btn>
               <v-btn v-else class='btn' @click="save()">Save</v-btn>
+              <v-btn v-if="edit" class='btn' @click="cancel()">Cancel</v-btn>
             </v-card>
 
           </v-container>
@@ -150,7 +151,12 @@
         </section>
       </v-content>
 
-      
+      <v-footer class="justify-center" color="#FF5D73" height="50">
+        <div class="title font-weight-light grey--text text--lighten-1 text-center">
+          &copy; {{ (new Date()).getFullYear() }} — Made with 💜 by Santiago Mille
+        </div>
+      </v-footer>
+
     </v-app>
   </div>
 </template>
@@ -221,6 +227,9 @@
         alert("Your data has been saved!")
         console.log(this.user)
         this.edit=false;
+      },
+      cancel(){
+        this.edit=false;
       }
 
     }
@@ -257,7 +266,7 @@
 
 .btn{
   color: black !important;
-  margin-bottom: 25px;
+  margin: 25px;
 }
 
 .aboutPro{

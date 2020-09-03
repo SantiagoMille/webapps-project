@@ -88,6 +88,7 @@
           <v-container class=" container text-center less-margin">
             <h2 class="left black-text font-weight-bold mb-3">Your cloned projects</h2>
 
+            <span v-for="project in user.uploads" :key="project.name">
             <v-card v-for="project in user.projects" :key="project.name" target="_blank" elevation="0.5" max-width="100%">
               <v-row>
                 <v-col cols="12">
@@ -107,6 +108,8 @@
                 </v-col>
               </v-row>
             </v-card>
+            <br>
+            </span>
 
           </v-container>
           
