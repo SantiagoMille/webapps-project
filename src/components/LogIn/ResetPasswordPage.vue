@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <v-app>
-
       <v-app-bar 
         app
         color="#FF5D73"
@@ -33,7 +32,7 @@
           <div class="py-4"></div>
 
           <v-container  class="text-center less-margin">
-            <h2 class="display-2 black-text font-weight-bold mb-3">Log In</h2>
+            <h2 class="display-2 black-text font-weight-bold mb-3">Reset Password</h2>
 
             <v-responsive class="mx-auto mb-8" width="56">
               <v-divider class="mb-1"></v-divider>
@@ -47,28 +46,15 @@
                   <tr>
                     <td>
                       <v-text-field
-                        type="text"
-                        :rules="usernameRules"
-                        id="name"
-                        v-model="name"
-                        label="Username"
-                        required                      
+                        type="email"
+                        id="email"
+                        :rules="emailRules"
+                        v-model="email"
+                        label="Email"
+                        required                   
                       ></v-text-field>
                     </td>
                   </tr>  
-
-                  <tr>
-                    <td>
-                      <v-text-field
-                        type="password"
-                        :rules="rulesPass"
-                        id="password"
-                        v-model="password"
-                        label="Password"
-                        required
-                      ></v-text-field>
-                    </td>
-                  </tr> 
                     
                 </table>
 
@@ -76,7 +62,7 @@
                 <!--<v-btn :disabled="!valid" class='btn' name="button" @click="checkForm()">Submit</v-btn>-->
                 <br>
                 <p>Do not have an account? <a href="./signup">Sign up</a></p>
-                <p>Did you forget you password? <a href="./resetpassword">Reset password</a></p>
+                <p>Did you suddenly remember? <a href="./login">Log in</a></p>
 
               </v-form>
             </span>
@@ -85,17 +71,14 @@
               <v-row justify="center">
                 <v-dialog v-model="dialog" persistent max-width="390">
                   <v-card>
-                    <v-card-title v-if="numWrongLog<5" class="headline">Please check the following error(s):</v-card-title>
-                    <v-card-title v-else class="headline">You can no longer try more times, please try again later.</v-card-title>
+                    <v-card-title class="headline">Oops!</v-card-title>
                     <v-card-text>
-                      <ul>
-                        <li :key="error" v-for="error in errors">{{ error }}</li>
-                      </ul>
+                      Looks like this email is no registered under any account. Doble check!
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
                       <v-btn v-if="numWrongLog<5" color="green darken-1" text @click="dialog = false">OK</v-btn>
-                      <v-btn v-else color="green darken-1" text @click="ok(true)">OK</v-btn>
+                      <v-btn v-else color="green darken-1" text @click="ok(false)">OK</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -106,13 +89,13 @@
               <v-row justify="center">
                 <v-dialog v-model="dialogGood" persistent max-width="390">
                   <v-card>
-                    <v-card-title class="headline">You have succesfully logged in.</v-card-title>
+                    <v-card-title class="headline">An email has been sent to you.</v-card-title>
                     <v-card-text>
-                      It is time to continue creating!!
+                      Check your email and follow the steps there.
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="green darken-1" text @click="ok(false)">OK</v-btn>
+                      <v-btn color="green darken-1" text @click="ok(true)">OK</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -144,60 +127,35 @@
   import axios from "axios";
   export default {
     
-    name: 'LogInPage',
+    name: 'ResetPasswordPage',
     data: () => ({
       errors:[],
       dialog:false,
       dialogGood:false,
-      name:null,
+      email:null,
       valid:false,
-      numWrongLog:0,
-      password:null,
-      headers : {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
-      usernameRules: [
-        v => !!v || 'Name is required',
-        v => /[a-zA-Z0-9\-./]+/.test(v) || 'Name must be valid',
-      ],
-      rulesPass: [
-        value => !!value || 'Required.',
-        value => (value && value.length >= 7) || 'Min 7 characters',
-        value => (value && /\d/.test(value)) || 'You need at least a number'
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
     }),
     methods:{
       checkForm:function() {
-        let post = {
-          mail: this.name,
-          password: this.password,
-        };
-        let _this = this;
-        
-        axios.post("https://odphl0sbqd.execute-api.us-east-1.amazonaws.com/default/validacuenta", post,{
-          headers: this.headers
-        }).then((result) => {
-          if(result.data.login=='success') {
-            _this.dialogGood=true;
-          }else{
-            _this.dialog=true;
-            _this.errors = [];
-            _this.numWrongLog+=1;
-            _this.errors.push("Not authorized! Please check you information.");
-          }
-        }).catch(error => {
-            console.log(error)
-            _this.dialog=true;
-            _this.errors = [];
-            _this.numWrongLog+=1;
-            _this.errors.push(error);
-        });
-        
+        axios.get("https://jsonplaceholder.typicode.com/todos/1").then((result) => {
+          console.log(result.data);
+        })
+        if(this.email) {
+          this.dialogGood=true;
+        }else{
+          this.dialog=true;
+          this.errors = [];
+          this.numWrongLog+=1;
+          if(!this.name) this.errors.push("Name required.");
+          if(!this.password) this.errors.push("Password required.");
+        }
       },
       ok(good){
         if(good) router.push('/');
-        else router.push('dashboard');
       }
     }
   }

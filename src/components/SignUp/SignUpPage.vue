@@ -106,7 +106,7 @@
                         v-model="password"
                         label="Password"
                         required 
-                        :rules="rules"                  
+                        :rules="rulesPass"                  
                       ></v-text-field>
                     </td>
                   </tr>
@@ -119,7 +119,7 @@
                         v-model="conformPas"
                         label="Confirm Password"
                         required 
-                        :rules="rules"                  
+                        :rules="rulesPass"                  
                       ></v-text-field>
                     </td>
                   </tr>
@@ -145,7 +145,24 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="green darken-1" text @click="dialog = false">OK</v-btn>
+                      <v-btn color="green darken-1" text @click="ok(true)">OK</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
+              </v-row>
+            </template>
+
+            <template>
+              <v-row justify="center">
+                <v-dialog v-model="dialogGood" persistent max-width="390">
+                  <v-card>
+                    <v-card-title class="headline">You have succesfully signed up!</v-card-title>
+                    <v-card-text>
+                      Check your email and let's get started!
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="green darken-1" text @click="ok(false)">OK</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -176,6 +193,7 @@
 
 <script>
   import router from "../../router/index";
+  import axios from "axios";
 
   export default {
     name: 'SignUpPage',
@@ -187,8 +205,14 @@
       password:null,
       sex:null,
       dialog:false,
+      dialogGood:false,
       valid:false,
       email:null,
+      rulesPass: [
+        value => !!value || 'Required.',
+        value => (value && value.length >= 7) || 'Min 7 characters',
+        value => (value && /\d/.test(value)) || 'You need at least a number'
+      ],
       rules: [
         value => !!value || 'Required.',
         value => (value && value.length >= 7) || 'Min 7 characters',
@@ -213,16 +237,46 @@
       ],
     }),
     methods:{
-      checkForm:function(e) {
-        this.errors = [];
-        this.dialog=true;
-        if(!this.name) this.errors.push("Name required.");
-        if(!this.password) this.errors.push("Password required.");
-        if(this.password!=this.conformPas) this.errors.push("Passwords do not match!");
-        if(this.name && this.password && (this.password==this.conformPas)){
-          router.push('dashboard');
+      checkForm:function() {
+        if(this.conformPas!=this.password){
+          this.dialog=true;
+          this.errors = [];
+          this.errors.push("Your passwords do not match!");
+          return 
+        }else{
+          let post = {
+            mail: this.email,
+            password: this.password,
+            nombre:this.name,
+            trato:"NA",
+            apPaterno:"NA",
+            apMaterno:"NA",
+            telefono:"NA",
+          };
+          let _this = this;
+          
+          axios.post("https://odphl0sbqd.execute-api.us-east-1.amazonaws.com/default/creacuenta", post,{
+            headers: this.headers
+          }).then((result) => {
+            if(result.data.result=='success') {
+              _this.dialogGood=true;
+            }else{
+              _this.dialog=true;
+              _this.errors = [];
+              _this.errors.push("Please check you information or try again later");
+              _this.errors.push(result.data);
+            }
+          }).catch(error => {
+              console.log(error)
+              _this.dialog=true;
+              _this.errors = [];
+              _this.errors.push(error);
+          });
         }
-        e.preventDefault();
+      },
+      ok(bad){
+        if(bad) this.dialog=false;
+        if(!bad) router.push('dashboard');
       }
     }
   }

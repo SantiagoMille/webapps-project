@@ -23,11 +23,11 @@
             <v-list-item-title>My uploads</v-list-item-title>
           </v-list-item>
 
-          <v-list-item href="./profile">
+          <v-list-item href="./dashboard">
             <v-list-item-icon>
-              <v-icon>mdi-account</v-icon>
+              <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>My profile</v-list-item-title>
+            <v-list-item-title>Dashboard</v-list-item-title>
           </v-list-item>
 
           <v-list-item href="./">
@@ -86,48 +86,27 @@
         <section class='background' id="about-me">
 
           <v-container class=" container text-center less-margin">
-            <h2 class="left black-text font-weight-bold mb-3">Hello, {{user.name.split(' ')[0]}}</h2>
-
 
             <v-card target="_blank" elevation="0.5" max-width="100%">
               <v-row>
                 <v-col cols="12">
                   <v-card-title class="text">
-                    <p class="left black-text font-weight-bold mb-3">Your newest cloned projects:</p>
+                    <p class="left black-text font-weight-bold mb-3">{{user.name.split(' ')[0]+"'s information:"}}</p>
                   </v-card-title>
-                  <v-card-text class="center">
-                    <v-row class='margin-about' :key="'proj'+key" v-for="(project,key) in user.projects">
-                      <v-col md='4' sm="6" class="black-text left" cols="12" >
-                        {{project.name}}
+                  <v-card-text class="left">
+                    <v-row class="margin_0" v-for="element in Object.entries(user)" :key="element[0]">
+                      <v-col cols="4">
+                        <h3>
+                        {{element[0]}}
+                        </h3>
                       </v-col>
-                      <v-col md='8' sm="6" class="black-text left" cols="12" >
-                        {{project.description}}
+                      <v-col cols="8">
+                        {{element[1]}}
                       </v-col>
                     </v-row>
                   </v-card-text>
                 </v-col>
-              </v-row>
-            </v-card>
-
-            <br/>
-
-            <v-card target="_blank" elevation="0.5" max-width="100%">
-              <v-row>
-                <v-col cols="12">
-                  <v-card-title class="text">
-                    <p class="left black-text font-weight-bold mb-3">Your newest upload projects:</p>
-                  </v-card-title>
-                  <v-card-text class="center">
-                    <v-row class='margin-about' :key="'up'+keys" v-for="(upload,keys) in user.uploads">
-                      <v-col md='4' sm="6" class="black-text left" cols="12" >
-                        {{upload.name}}
-                      </v-col>
-                      <v-col md='8' sm="6" class="black-text left" cols="12" >
-                        {{upload.description}}
-                      </v-col>
-                    </v-row>
-                  </v-card-text>
-                </v-col>
+                
               </v-row>
             </v-card>
 
@@ -136,18 +115,14 @@
         </section>
       </v-content>
 
-      <v-footer class="justify-center" color="#FF5D73" height="100">
-        <div class="title font-weight-light grey--text text--lighten-1 text-center">
-          &copy; {{ (new Date()).getFullYear() }} — Made with 💜 by Santiago Mille
-        </div>
-      </v-footer>
+      
     </v-app>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'MainPage',
+    name: 'ProfilePage',
 
     data: () => ({
       text: 'am an engineer',
@@ -268,6 +243,10 @@
 
 .titlee{
   color: white;
+}
+
+.margin_0{
+  margin: 0;
 }
 
 @media only screen and (max-width: 800px) {

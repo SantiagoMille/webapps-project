@@ -21,9 +21,29 @@ const router = new VueRouter({
       component: () => import("@/views/SignUp")
     },
     {
-      path: "/dashboard",
+      path: "/dashboard", 
       name: "dashboard",
       component: () => import("@/views/Main")
+    },
+    {
+      path: "/resetpassword", 
+      name: "ResetPassword",
+      component: () => import("@/views/ResetPassword")
+    },
+    {
+      path: "/profile", 
+      name: "Profile",
+      component: () => import("@/views/Profile")
+    },
+    {
+      path: "/myuploads", 
+      name: "Uploads",
+      component: () => import("@/views/Uploads")
+    },
+    {
+      path: "/myproducts", 
+      name: "Products",
+      component: () => import("@/views/Cloned")
     },
   ],
   mode: "history"
