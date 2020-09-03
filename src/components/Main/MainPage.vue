@@ -47,7 +47,7 @@
         scroll-threshold='5'
         clipped-right
         elevation="0">
-        <a href = './'><v-avatar
+        <a href = './dashboard'><v-avatar
 
           class="mr-3"
           color="#FF5D73"
@@ -136,7 +136,7 @@
         </section>
       </v-content>
 
-      <v-footer class="justify-center" color="#FF5D73" height="100">
+      <v-footer class="justify-center" color="#FF5D73" height="50">
         <div class="title font-weight-light grey--text text--lighten-1 text-center">
           &copy; {{ (new Date()).getFullYear() }} — Made with 💜 by Santiago Mille
         </div>
@@ -150,12 +150,7 @@
     name: 'MainPage',
 
     data: () => ({
-      text: 'am an engineer',
-      hobbiesList: ['Robotics','Genetics','SynBio', 'Circuits', 'ML', 'Deep Learning', 'Web development', 'and more...'],
-      colorList: ['H04F06A','H4C6665','HFFA69E','H2DE1FC','HFF7E6B', 'Hffd33c'],
-      continue:true,
-      color:'#04F06A',
-      hobbiesListIter: 0,
+    
       drawer:false,
       user:{
         "name":"Rodrigo Cabrera Pliego",
@@ -188,25 +183,8 @@
         },
       }
     ),
-    mounted(){
-      this.repeatTimeout(0);
-    },
+
     methods:{
-      repeatTimeout(prevN) {
-        let num = Math.round(Math.random() * 5)
-        while(prevN===num){
-          num = Math.round(Math.random() * 5)
-        }
-        
-        setTimeout(function(){
-          if(this.continue){
-            this.text = this.hobbiesList[this.hobbiesListIter]
-            this.hobbiesListIter = (this.hobbiesListIter+1)%this.hobbiesList.length
-            this.color = this.colorList[num]
-            this.repeatTimeout(num)
-          }
-        }.bind(this),1500);
-      },
       logout(){
         console.log('logout')
       }

@@ -9,11 +9,11 @@
         temporary>
         <v-list nav dense>
         
-          <v-list-item href="./myproducts">
+          <v-list-item href="./profile">
             <v-list-item-icon>
-              <v-icon>mdi-folder-download</v-icon>
+              <v-icon>mdi-account</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>My products</v-list-item-title>
+            <v-list-item-title>Profile</v-list-item-title>
           </v-list-item>
 
           <v-list-item href="./myuploads">
@@ -63,8 +63,8 @@
         
         <v-spacer></v-spacer>
 
-        <v-btn class="bar-b" title="Cloned" href='./myproducts' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
-          <v-icon large>mdi-folder-download</v-icon>
+        <v-btn class="bar-b" title="Profile" href='./profile' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
+          <v-icon large>mdi-account</v-icon>
         </v-btn>
         <v-btn class="bar-b" title="Uploads" href='./myuploads' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
           <v-icon large>mdi-cloud-upload</v-icon>
@@ -86,63 +86,26 @@
         <section class='background' id="about-me">
 
           <v-container class=" container text-center less-margin">
+            <h2 class="left black-text font-weight-bold mb-3">Your uploaded projects</h2>
 
-            <v-card target="_blank" elevation="0.5" max-width="100%">
+            <v-card v-for="project in user.uploads" :key="project.name" target="_blank" elevation="0.5" max-width="100%">
               <v-row>
                 <v-col cols="12">
                   <v-card-title class="text margin_12">
-                    <h3 class="left black-text font-weight-bold mb-3">{{user.name.split(' ')[0]+"'s information:"}}</h3>
+                    <h3 class="left black-text font-weight-bold mb-3">{{project.name}}</h3>
                   </v-card-title>
+                  <v-card-subtitle class="left magin_12">
+                    {{project.description}}
+                  </v-card-subtitle>
                   <v-card-text class="left">
-                    <v-row class="margin_0" v-for="element in Object.entries(user)" :key="element[0]">
-                      <v-col cols="4">
-                        <h3>
-                          {{keyToTitle[element[0]]}}
-                        </h3>
-                      </v-col>
-                      <v-col cols="8">
-                        <v-row v-if="element[0]=='uploads'||element[0]=='projects'">
-                          <v-col v-for="project in element[1]" :key="project.name" cols="3">
-                            {{project.name}}
-                          </v-col>
-                        </v-row>
-                        <span v-else>
-                          <span v-if="element[0]=='password'">
-                            <p v-if="!edit">{{element[1]}}</p>
-                            <v-text-field v-else
-                              type="password"
-                              :id="user[element[0]]"
-                              v-model="user[element[0]]"
-                              :label="keyToTitle[element[0]]"
-                              required
-                            ></v-text-field>
-                            <v-text-field v-if="edit"
-                              type="password"
-                              :id="user[element[0]]"
-                              v-model="newpass"
-                              :label="keyToTitle[element[0]]"
-                              required
-                            ></v-text-field>
-                          </span>
-                          <span v-else>
-                            <p v-if="!edit">{{element[1]}}</p>
-                            <v-text-field v-else
-                              type="text"
-                              :id="user[element[0]]"
-                              v-model="user[element[0]]"
-                              :label="keyToTitle[element[0]]"
-                              required
-                            ></v-text-field>
-                          </span>
-                        </span>
+                    <v-row class="margin_0">
+                      <v-col class="padding0" v-for="doc in project.documents" :key="doc.name" cols="3" sm='6' md='2'>
+                        <a class="" :href="doc.url" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
                       </v-col>
                     </v-row>
                   </v-card-text>
                 </v-col>
-                
               </v-row>
-              <v-btn v-if="!edit" class='btn' @click="editB()">Edit</v-btn>
-              <v-btn v-else class='btn' @click="save()">Save</v-btn>
             </v-card>
 
           </v-container>
@@ -157,20 +120,11 @@
 
 <script>
   export default {
-    name: 'ProfilePage',
+    name: 'UploadsPage',
 
     data: () => ({
       edit:false,
       drawer:false,
-      newpass:'',
-      keyToTitle:{
-        name:"Name",
-        username:"Username",
-        email:'E-mail',
-        password:'Password',
-        uploads:'Uploads',
-        projects:'Projects'
-      },
       user:{
         "name":"Rodrigo Cabrera Pliego",
         "username":"rocapl",
@@ -181,14 +135,16 @@
             "description":"This a chassis and code for a mini sumo robot.",
             "documents":[{
               "name":"chassis.stl",
-              "size":2889
+              "size":2889,
+              "url":'https://www.google.com/'
             }]
           },{
             "name":"Sumo Roboot",
-            "description":"This a chassis and code for a mini sumo robot.",
+            "description":"This is another chassis and code for a mini sumo robot.",
             "documents":[{
               "name":"chassis.stl",
-              "size":2889
+              "size":1899,
+              "url":'https://www.google.com/'
             }]
           }],
         "projects":[{
@@ -196,15 +152,18 @@
             "description":"This is the structure, mechanics and code for a quadruped robot built in wood",
             "documents":[{
               "name":"leg.stl",
-              "size":2889
+              "size":2889,
+              "url":'https://www.google.com/'
             },
             {
               "name":"chassis.stl",
-              "size":28889
+              "size":28889,
+              "url":'https://www.google.com/'
             },
             {
               "name":"code.c",
-              "size":289
+              "size":289,
+              "url":'https://www.google.com/'
             }]
           }]
         },
@@ -241,6 +200,10 @@
 }
 .background{
   background:#ffffff
+}
+
+.padding0{
+  padding: 0;
 }
 
 .left{

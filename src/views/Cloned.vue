@@ -1,6 +1,6 @@
 <template>
     <span id='start'>
-        <main-page></main-page>
+        <cloned-page></cloned-page>
         <v-btn
             class='margin'
             absolute
@@ -15,12 +15,12 @@
 </template>
 
 <script>
-import MainPage from '@/components/Main/MainPage';
+import ClonedPage from '@/components/Products/ClonedPage';
 
 export default {
     name: 'Cloned',
     components: {
-        MainPage,
+        ClonedPage,
     }
 };
 </script>

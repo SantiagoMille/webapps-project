@@ -149,7 +149,7 @@
         </section>
       </v-content>
 
-      <v-footer class="justify-center" color="#FF5D73" height="100">
+      <v-footer class="justify-center" color="#FF5D73" height="50">
         <div class="title font-weight-light grey--text text--lighten-1 text-center">
           &copy; {{ (new Date()).getFullYear() }} — Made with 💜 by Santiago Mille
         </div>
