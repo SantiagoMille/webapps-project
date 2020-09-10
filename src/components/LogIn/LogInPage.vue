@@ -170,21 +170,24 @@
     methods:{
       checkForm:function() {
         let post = {
-          mail: this.name,
+          users: this.name,
           password: this.password,
         };
         let _this = this;
         
-        axios.post("https://odphl0sbqd.execute-api.us-east-1.amazonaws.com/default/validacuenta", post,{
+        axios.post("https://nsfavh8f81.execute-api.us-east-1.amazonaws.com/default/logInA01169067", post,{
           headers: this.headers
         }).then((result) => {
-          if(result.data.login=='success') {
+          console.log(result.data)
+          if(result.status==200&&result.data.statusCode&&result.data.statusCode==200) {
             _this.dialogGood=true;
           }else{
             _this.dialog=true;
             _this.errors = [];
             _this.numWrongLog+=1;
-            _this.errors.push("Not authorized! Please check you information.");
+            _this.errors.push("User does not exist! Please check you information.");
+            _this.errors.push(result.data.body);
+            _this.errors.push(result.data.errorMessage)
           }
         }).catch(error => {
             console.log(error)

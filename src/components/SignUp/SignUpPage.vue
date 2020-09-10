@@ -208,6 +208,10 @@
       dialogGood:false,
       valid:false,
       email:null,
+      headers : {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
       rulesPass: [
         value => !!value || 'Required.',
         value => (value && value.length >= 7) || 'Min 7 characters',
@@ -247,24 +251,23 @@
           let post = {
             mail: this.email,
             password: this.password,
-            nombre:this.name,
-            trato:"NA",
-            apPaterno:"NA",
-            apMaterno:"NA",
-            telefono:"NA",
+            name:this.name,
+            sex:this.sex,
+            users:this.username
           };
           let _this = this;
           
-          axios.post("https://odphl0sbqd.execute-api.us-east-1.amazonaws.com/default/creacuenta", post,{
+          axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/creaCuentaA01169067", post,{
             headers: this.headers
           }).then((result) => {
-            if(result.data.result=='success') {
+            //console.log(result)
+            if(result.status==200 &&result.data.statusCode && result.data.statusCode==200) {
               _this.dialogGood=true;
             }else{
               _this.dialog=true;
               _this.errors = [];
               _this.errors.push("Please check you information or try again later");
-              _this.errors.push(result.data);
+              _this.errors.push(result.data.body);
             }
           }).catch(error => {
               console.log(error)
