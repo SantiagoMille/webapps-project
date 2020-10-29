@@ -124,6 +124,9 @@
                               required
                             ></v-text-field>
                           </span>
+                          <span v-else-if="element[0]=='username'">
+                            <p>{{element[1]}}</p>
+                          </span>
                           <span v-else>
                             <p v-if="!edit">{{element[1]}}</p>
                             <v-text-field v-else
@@ -162,6 +165,8 @@
 </template>
 
 <script>
+  import axios from "axios";
+
   export default {
     name: 'ProfilePage',
 
@@ -176,6 +181,10 @@
         password:'Password',
         uploads:'Uploads',
         projects:'Projects'
+      },
+      headers : {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
       },
       user:{
         "name":"Rodrigo Cabrera Pliego",
@@ -224,9 +233,33 @@
         this.edit=true;
       },
       save(){
-        alert("Your data has been saved!")
-        console.log(this.user)
-        this.edit=false;
+        //console.log(this.user)
+        if(this.user['password']!=this.newpass){
+          alert("Passwords do not match!")
+          return 
+        }
+        let post = {
+          mail: this.user['email'],
+          password: this.user['password'],
+          name:this.user['name'],
+          users:this.user['username']
+        };
+        
+        console.log(post);
+        
+        axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/edit-user", post,{
+          headers: this.headers
+        }).then((result) => {
+          console.log(result)
+          if(result.status==200 &&result.data.statusCode && result.data.statusCode==200) {
+            this.edit=false;
+            alert("Your data has been saved!")
+          }else{
+            alert("There was an error in the update!: "+result.data.body)
+          }
+        }).catch(error => {
+            alert(error)
+        });
       },
       cancel(){
         this.edit=false;

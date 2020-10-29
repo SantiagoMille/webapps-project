@@ -46,6 +46,18 @@
                   <tr>
                     <td>
                       <v-text-field
+                        type="text"
+                        :rules="usernameRules"
+                        id="name"
+                        v-model="name"
+                        label="Username"
+                        required                      
+                      ></v-text-field>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <v-text-field
                         type="email"
                         id="email"
                         :rules="emailRules"
@@ -73,12 +85,11 @@
                   <v-card>
                     <v-card-title class="headline">Oops!</v-card-title>
                     <v-card-text>
-                      Looks like this email is no registered under any account. Doble check!
+                      Looks like this email is no registered under any account. Double check!
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn v-if="numWrongLog<5" color="green darken-1" text @click="dialog = false">OK</v-btn>
-                      <v-btn v-else color="green darken-1" text @click="ok(false)">OK</v-btn>
+                      <v-btn color="green darken-1" text @click="dialog = false">OK</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
@@ -133,25 +144,53 @@
       dialog:false,
       dialogGood:false,
       email:null,
+      name:null,
       valid:false,
+      headers : {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
       ],
+      usernameRules: [
+        v => !!v || 'Name is required',
+        v => /[a-zA-Z0-9\-./]+/.test(v) || 'Name must be valid',
+      ],
     }),
     methods:{
       checkForm:function() {
-        axios.get("https://jsonplaceholder.typicode.com/todos/1").then((result) => {
-          console.log(result.data);
-        })
         if(this.email) {
-          this.dialogGood=true;
+          let post = {
+            mail: this.email,
+            users: this.name
+          };
+          let _this = this;
+          console.log(post);
+          
+          axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/consult-mail", post,{
+            headers: this.headers
+          }).then((result) => {
+            console.log(result)
+            if(result.status==200 &&result.data.statusCode && result.data.statusCode==200) {
+              _this.dialogGood=true;
+            }else{
+              _this.dialog=true;
+              _this.errors = [];
+              _this.errors.push("Correo no existe!!");
+              _this.errors.push(result.data.body);
+            }
+          }).catch(error => {
+              console.log(error)
+              _this.dialog=true;
+              _this.errors = [];
+              _this.errors.push(error);
+          });
         }else{
           this.dialog=true;
           this.errors = [];
-          this.numWrongLog+=1;
-          if(!this.name) this.errors.push("Name required.");
-          if(!this.password) this.errors.push("Password required.");
+          this.errors.push("Add an email");
         }
       },
       ok(good){

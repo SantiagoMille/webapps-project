@@ -256,12 +256,12 @@
             users:this.username
           };
           let _this = this;
-          
+          console.log(post);
           
           axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/creaCuentaA01169067", post,{
             headers: this.headers
           }).then((result) => {
-            //console.log(result)
+            console.log(result)
             if(result.status==200 &&result.data.statusCode && result.data.statusCode==200) {
               _this.dialogGood=true;
             }else{

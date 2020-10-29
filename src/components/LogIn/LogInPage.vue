@@ -175,7 +175,7 @@
         };
         let _this = this;
         
-        axios.post("https://nsfavh8f81.execute-api.us-east-1.amazonaws.com/default/logInA01169067", post,{
+        axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/login", post,{
           headers: this.headers
         }).then((result) => {
           console.log(result.data)
