@@ -153,7 +153,7 @@
             </template>
 
             <template>
-              <v-row justify="center">
+              <v-row justify="center" width="100px">
                 <v-dialog v-model="dialogGood" persistent max-width="390">
                   <v-card>
                     <v-card-title class="headline">You have succesfully signed up!</v-card-title>
@@ -310,6 +310,10 @@
 .btn{
   color: black !important;
   margin-bottom: 25px;
+}
+
+.headline{
+  font-size: 1.3rem !important;
 }
 
 .button{

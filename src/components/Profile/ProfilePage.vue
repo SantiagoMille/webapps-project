@@ -108,9 +108,9 @@
                         </v-row>
                         <span v-else>
                           <span v-if="element[0]=='password'">
-                            <p v-if="!edit">{{element[1]}}</p>
+                            <p v-if="!edit">{{"******"+element[1][element[1].length-1]}}</p>
                             <v-text-field v-else
-                              type="password"
+                              type="text"
                               :id="user[element[0]]"
                               v-model="user[element[0]]"
                               :label="keyToTitle[element[0]]"
@@ -166,6 +166,7 @@
 
 <script>
   import axios from "axios";
+  import router from '../../router'
 
   export default {
     name: 'ProfilePage',
@@ -174,6 +175,7 @@
       edit:false,
       drawer:false,
       newpass:'',
+      saveduser:null,
       keyToTitle:{
         name:"Name",
         username:"Username",
@@ -225,9 +227,21 @@
         },
       }
     ),
+    mounted () {
+      let count=0
+      while(this.saveduser==null&&count<5){
+        this.saveduser = this.$store.getters.getUser
+        count++;
+      }
+      if(this.saveduser==null){
+        router.push('/');
+      }
+      this.user.name = this.saveduser.user.fullName
+      this.user.username = this.saveduser.user.username
+    },
     methods:{
       logout(){
-        console.log('logout')
+        this.$store.commit("setUser", {});
       },
       editB(){
         this.edit=true;

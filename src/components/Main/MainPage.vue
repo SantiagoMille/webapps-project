@@ -30,13 +30,6 @@
             <v-list-item-title>My profile</v-list-item-title>
           </v-list-item>
 
-          <v-list-item href="./">
-            <v-list-item-icon>
-              <v-icon>mdi-logout</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Log out</v-list-item-title>
-          </v-list-item>
-
         </v-list>
       </v-navigation-drawer>
 
@@ -60,9 +53,9 @@
           ></v-img>
         </v-avatar></a>
         <h1 class="titlee">Open Sourx</h1>
-        
-        <v-spacer></v-spacer>
 
+        <v-spacer></v-spacer>
+        
         <v-btn class="bar-b" title="Cloned" href='./myproducts' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
           <v-icon large>mdi-folder-download</v-icon>
         </v-btn>
@@ -71,9 +64,6 @@
         </v-btn>
         <v-btn class="bar-b" title="Profile" href='./profile' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
           <v-icon large>mdi-account</v-icon>
-        </v-btn>
-        <v-btn class="bar-b" title="Log out" @click="logout()" href='./' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
-          <v-icon large>mdi-logout</v-icon>
         </v-btn>
         <v-btn class="bar-b" v-if="$vuetify.breakpoint.smOnly||$vuetify.breakpoint.xsOnly" icon style="color:white" @click="drawer = !drawer">
           <v-icon large>mdi-menu</v-icon>
@@ -86,7 +76,7 @@
         <section class='background' id="about-me">
 
           <v-container class=" container text-center less-margin">
-            <h2 class="left black-text font-weight-bold mb-3">Hello, {{user.name.split(' ')[0]}}</h2>
+            <h2 class="left black-text font-weight-bold mb-3">Hello, {{userdata.name.split(' ')[0]}}</h2>
 
 
             <v-card target="_blank" elevation="0.5" max-width="100%">
@@ -96,7 +86,7 @@
                     <p class="left black-text font-weight-bold mb-3">Your newest cloned projects:</p>
                   </v-card-title>
                   <v-card-text class="center">
-                    <v-row class='margin-about' :key="'proj'+key" v-for="(project,key) in user.projects">
+                    <v-row class='margin-about' :key="'proj'+key" v-for="(project,key) in userdata.projects">
                       <v-col md='4' sm="6" class="black-text left" cols="12" >
                         {{project.name}}
                       </v-col>
@@ -118,7 +108,7 @@
                     <p class="left black-text font-weight-bold mb-3">Your newest upload projects:</p>
                   </v-card-title>
                   <v-card-text class="center">
-                    <v-row class='margin-about' :key="'up'+keys" v-for="(upload,keys) in user.uploads">
+                    <v-row class='margin-about' :key="'up'+keys" v-for="(upload,keys) in userdata.uploads">
                       <v-col md='4' sm="6" class="black-text left" cols="12" >
                         {{upload.name}}
                       </v-col>
@@ -146,13 +136,15 @@
 </template>
 
 <script>
+import router from '../../router'
   export default {
     name: 'MainPage',
 
     data: () => ({
     
       drawer:false,
-      user:{
+      user:null,
+      userdata:{
         "name":"Rodrigo Cabrera Pliego",
         "username":"rocapl",
         "email":"rodrigo@amazon.com",
@@ -183,12 +175,20 @@
         },
       }
     ),
-
-    methods:{
-      logout(){
-        console.log('logout')
+    mounted () {
+      let count=0
+      while(!this.user&&count<5){
+        this.user = this.$store.getters.getUser
+        count++
       }
-
+      if(this.user==null){
+        router.push('/');
+      }
+      this.userdata.name = this.user.user.fullName
+      
+    },
+    methods:{
+      
     }
   }
 </script>

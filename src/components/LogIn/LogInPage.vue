@@ -82,7 +82,7 @@
             </span>
 
             <template>
-              <v-row justify="center">
+              <v-row justify="center" class="wid100">
                 <v-dialog v-model="dialog" persistent max-width="390">
                   <v-card>
                     <v-card-title v-if="numWrongLog<5" class="headline">Please check the following error(s):</v-card-title>
@@ -103,7 +103,7 @@
             </template>
 
             <template>
-              <v-row justify="center">
+              <v-row justify="center" width="100px">
                 <v-dialog v-model="dialogGood" persistent max-width="390">
                   <v-card>
                     <v-card-title class="headline">You have succesfully logged in.</v-card-title>
@@ -148,6 +148,7 @@
     data: () => ({
       errors:[],
       dialog:false,
+      user:null,
       dialogGood:false,
       name:null,
       valid:false,
@@ -178,8 +179,11 @@
         axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/login", post,{
           headers: this.headers
         }).then((result) => {
-          console.log(result.data)
+          //console.log(result.data)
+          //console.log('\n\n\n')
           if(result.status==200&&result.data.statusCode&&result.data.statusCode==200) {
+            _this.$store.commit("setUser", {'username':_this.name,'token':result.data.token,'fullName':result.data.name});
+            _this.user={'username':_this.name,'token':result.data.token,'fullName':result.data.name};
             _this.dialogGood=true;
           }else{
             _this.dialog=true;
@@ -199,8 +203,11 @@
         
       },
       ok(good){
-        if(good) router.push('/');
-        else router.push('dashboard');
+        if(good){router.push('/');}
+        else{
+          //this.$store.commit("setUser", this.user);
+          router.push('dashboard');
+        }
       }
     }
   }
@@ -240,6 +247,15 @@ select,label {
   margin-left: 0px;
   color: black !important;
   font-size: 1.5vmax;
+}
+
+.headline{
+  font-size: 1.3rem !important;
+}
+
+.wid100{
+  min-width: fit-content;
+  width: 150px;
 }
 
 input, select{

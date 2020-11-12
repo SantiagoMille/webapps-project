@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-//import store from "@/store/index.js";
+import store from "@/store/index.js";
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -13,17 +13,26 @@ const router = new VueRouter({
     {
       path: "/login",
       name: "LogIn",
-      component: () => import("@/views/LogIn")
+      component: () => import("@/views/LogIn"),
+      meta: {
+        notRequiresAuth: true
+      }
     },
     {
       path: "/signup",
       name: "SignUp",
-      component: () => import("@/views/SignUp")
+      component: () => import("@/views/SignUp"),
+      meta: {
+        notRequiresAuth: true
+      }
     },
     {
       path: "/dashboard", 
       name: "dashboard",
-      component: () => import("@/views/Main")
+      component: () => import("@/views/Main"),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/resetpassword", 
@@ -33,26 +42,55 @@ const router = new VueRouter({
     {
       path: "/profile", 
       name: "Profile",
-      component: () => import("@/views/Profile")
+      component: () => import("@/views/Profile"),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/myuploads", 
       name: "Uploads",
-      component: () => import("@/views/Uploads")
+      component: () => import("@/views/Uploads"),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/myproducts", 
       name: "Products",
-      component: () => import("@/views/Cloned")
+      component: () => import("@/views/Cloned"),
+      meta: {
+        requiresAuth: true
+      }
     },
   ],
   mode: "history"
 });
 
 router.beforeEach((to, from, next) => {
+
+  let u = store.getters.getUser;
   
-    next();
-    
+  if(to.name=="dashboard"&&from.name=='LogIn'){
+    location.reload();
+  }
+
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (u&&!('token' in u.user)) {
+      next({ name: 'LogIn' })
+    } else {
+      next(); 
+    }
+  }
+  else if (to.matched.some(record => record.meta.notRequiresAuth)) {
+    if (u&&'token' in u.user) {
+      next({ name: 'dashboard' })
+    } else {
+      next(); 
+    }
+  } else {
+    next(); 
+  }
 });
 
 export default router;
