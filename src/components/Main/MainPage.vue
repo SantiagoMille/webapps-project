@@ -30,6 +30,13 @@
             <v-list-item-title>My profile</v-list-item-title>
           </v-list-item>
 
+          <v-list-item href="./search">
+            <v-list-item-icon>
+              <v-icon>mdi-magnify</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Search</v-list-item-title>
+          </v-list-item>
+
         </v-list>
       </v-navigation-drawer>
 
@@ -56,6 +63,9 @@
 
         <v-spacer></v-spacer>
         
+        <v-btn class="bar-b" title="Log out" href='./search' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
+          <v-icon large>mdi-magnify</v-icon>
+        </v-btn>
         <v-btn class="bar-b" title="Cloned" href='./myproducts' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
           <v-icon large>mdi-folder-download</v-icon>
         </v-btn>
@@ -78,7 +88,6 @@
           <v-container class=" container text-center less-margin">
             <h2 class="left black-text font-weight-bold mb-3">Hello, {{userdata.name.split(' ')[0]}}</h2>
 
-
             <v-card target="_blank" elevation="0.5" max-width="100%">
               <v-row>
                 <v-col cols="12">
@@ -88,10 +97,13 @@
                   <v-card-text class="center">
                     <v-row class='margin-about' :key="'proj'+key" v-for="(project,key) in userdata.projects">
                       <v-col md='4' sm="6" class="black-text left" cols="12" >
-                        {{project.name}}
+                        <h4>{{project.name}}</h4>
                       </v-col>
                       <v-col md='8' sm="6" class="black-text left" cols="12" >
                         {{project.description}}
+                      </v-col>
+                      <v-col class="padding0 left" v-for="doc in project.documents" :key="doc.name" cols="3" sm='6' md='2'>
+                        <a class="left" :href="'https://www.google.com'" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -110,10 +122,13 @@
                   <v-card-text class="center">
                     <v-row class='margin-about' :key="'up'+keys" v-for="(upload,keys) in userdata.uploads">
                       <v-col md='4' sm="6" class="black-text left" cols="12" >
-                        {{upload.name}}
+                        <h4>{{upload.name}}</h4>
                       </v-col>
                       <v-col md='8' sm="6" class="black-text left" cols="12" >
                         {{upload.description}}
+                      </v-col>
+                      <v-col class="padding0 left" v-for="doc in upload.documents" :key="doc.name" cols="3" sm='6' md='2'>
+                        <a class="left" :href="'https://www.google.com'" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -136,7 +151,8 @@
 </template>
 
 <script>
-import router from '../../router'
+  import router from '../../router'
+  import axios from "axios";
   export default {
     name: 'MainPage',
 
@@ -144,6 +160,7 @@ import router from '../../router'
     
       drawer:false,
       user:null,
+      new:true,
       userdata:{
         "name":"Rodrigo Cabrera Pliego",
         "username":"rocapl",
@@ -181,14 +198,57 @@ import router from '../../router'
         this.user = this.$store.getters.getUser
         count++
       }
-      if(this.user==null){
+      if(this.user==null||!this.user||!this.user.user){
         router.push('/');
+      }else{
+        this.userdata.name = this.user.user.fullName
+        this.userdata.username = this.user.user.username
+        if(this.new){
+          this.$store.commit("setUserState", this.user.user);
+          this.new=false;
+          this.getProjects();
+        }
       }
-      this.userdata.name = this.user.user.fullName
-      
     },
     methods:{
-      
+      getProjects(){
+        let post = {
+          user: this.user.user.username,
+          maxx:5
+        };
+        let _this = this;
+        console.log(post)
+        
+        axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/getuserprojects", post,{
+          headers: this.headers
+        }).then((result) => {
+
+          if(result.status==200&&result.data.productos&&result.data.productos.length>0) {
+            _this.userdata.projects=[]
+            _this.userdata.uploads=[]
+            result.data.productos.forEach(element => {
+              let arr = element.documentos.split(';')
+              let arr2=[]
+              arr.forEach(e=>{
+                let x = e.split(',');
+                arr2.push({"name":x[0],"size":x[1]})
+              })
+              arr2.pop()
+              if(element.cloned){
+                _this.userdata.projects.push({'name':element.name,'description':element.description,'documents':arr2})
+              }else{
+                _this.userdata.uploads.push({'name':element.name,'description':element.description,'documents':arr2})
+              }
+            });
+            console.log(this.userdata)            
+          }else{
+            alert("No items for this user!")
+          }
+        }).catch(error => {
+            console.log(error)
+            alert(error);
+        });
+      }
     }
   }
 </script>

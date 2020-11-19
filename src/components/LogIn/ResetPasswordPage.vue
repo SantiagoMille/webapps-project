@@ -58,11 +58,11 @@
                   <tr>
                     <td>
                       <v-text-field
-                        type="email"
-                        id="email"
-                        :rules="emailRules"
-                        v-model="email"
-                        label="Email"
+                        type="password"
+                        id="password"
+                        :rules="rulesPass"
+                        v-model="password"
+                        label="New password"
                         required                   
                       ></v-text-field>
                     </td>
@@ -100,7 +100,7 @@
               <v-row justify="center">
                 <v-dialog v-model="dialogGood" persistent max-width="390">
                   <v-card>
-                    <v-card-title class="headline">An email has been sent to you.</v-card-title>
+                    <v-card-title class="headline">Your password has been changed!</v-card-title>
                     <v-card-text>
                       Check your email and follow the steps there.
                     </v-card-text>
@@ -143,16 +143,18 @@
       errors:[],
       dialog:false,
       dialogGood:false,
-      email:null,
+      password:null,
       name:null,
       valid:false,
       headers : {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       },
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      rulesPass: [
+        value => !!value || 'Required.',
+        value => (value && value.length >= 7) || 'Min 7 characters',
+        value => (value && /\d/.test(value)) || 'You need at least a number',
+        value => (value && /[a-zA-Z]/.test(value)) || 'You need at least a letter'
       ],
       usernameRules: [
         v => !!v || 'Name is required',
@@ -161,9 +163,9 @@
     }),
     methods:{
       checkForm:function() {
-        if(this.email) {
+        if(this.password) {
           let post = {
-            mail: this.email,
+            password: this.password,
             users: this.name
           };
           let _this = this;
@@ -172,8 +174,9 @@
           axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/consult-mail", post,{
             headers: this.headers
           }).then((result) => {
-            console.log(result)
+            console.log(result);
             if(result.status==200 &&result.data.statusCode && result.data.statusCode==200) {
+              console.log(result);
               _this.dialogGood=true;
             }else{
               _this.dialog=true;

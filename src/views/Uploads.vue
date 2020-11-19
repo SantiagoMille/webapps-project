@@ -8,19 +8,25 @@
             fab
             bottom
             right
-            @click="$vuetify.goTo('#start')">
-            <v-icon>mdi-arrow-up</v-icon>
+            v-on:click="change()">
+            <v-icon>mdi-plus</v-icon>
         </v-btn>
     </span>
 </template>
 
 <script>
 import UploadsPage from '@/components/Products/UploadsPage';
+import router from '../router'
 
 export default {
     name: 'Uploads',
     components: {
         UploadsPage,
+    },
+    methods:{
+        change(){
+            router.push('/newproject')
+        }
     }
 };
 </script>

@@ -63,6 +63,19 @@ const router = new VueRouter({
         requiresAuth: true
       }
     },
+    {
+      path: "/search", 
+      name: "Search",
+      component: () => import("@/views/Search"),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/newproject",
+      name: "AddProject",
+      component: () => import("@/views/Home")
+    },
   ],
   mode: "history"
 });

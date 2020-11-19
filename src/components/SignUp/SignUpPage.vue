@@ -156,7 +156,7 @@
               <v-row justify="center" width="100px">
                 <v-dialog v-model="dialogGood" persistent max-width="390">
                   <v-card>
-                    <v-card-title class="headline">You have succesfully signed up!</v-card-title>
+                    <v-card-title class="headline">Password updated!</v-card-title>
                     <v-card-text>
                       Check your email and let's get started!
                     </v-card-text>
@@ -215,7 +215,8 @@
       rulesPass: [
         value => !!value || 'Required.',
         value => (value && value.length >= 7) || 'Min 7 characters',
-        value => (value && /\d/.test(value)) || 'You need at least a number'
+        value => (value && /\d/.test(value)) || 'You need at least a number',
+        value => (value && /[a-zA-Z]/.test(value)) || 'You need at least a letter'
       ],
       rules: [
         value => !!value || 'Required.',
@@ -256,12 +257,12 @@
             users:this.username
           };
           let _this = this;
-          console.log(post);
+          //console.log(post);
           
           axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/creaCuentaA01169067", post,{
             headers: this.headers
           }).then((result) => {
-            console.log(result)
+            //console.log(result)
             if(result.status==200 &&result.data.statusCode && result.data.statusCode==200) {
               _this.dialogGood=true;
             }else{

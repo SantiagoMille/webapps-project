@@ -95,14 +95,14 @@
                   </v-card-title>
                   <v-card-text class="left">
                     <v-row class="margin_0" v-for="element in Object.entries(user)" :key="element[0]">
-                      <v-col cols="4">
+                      <v-col cols="6" md="2">
                         <h3>
                           {{keyToTitle[element[0]]}}
                         </h3>
                       </v-col>
-                      <v-col cols="8">
+                      <v-col cols="8" md="6">
                         <v-row v-if="element[0]=='uploads'||element[0]=='projects'">
-                          <v-col v-for="project in element[1]" :key="project.name" cols="3">
+                          <v-col v-for="project in element[1]" :key="project.name" cols="6" md="3">
                             {{project.name}}
                           </v-col>
                         </v-row>
