@@ -96,10 +96,13 @@
                   </v-card-title>
                   <v-card-text class="center">
                     <v-row class='margin-about' :key="'proj'+key" v-for="(project,key) in userdata.projects">
-                      <v-col md='4' sm="6" class="black-text left" cols="12" >
-                        <h4>{{project.name}}</h4>
+                      <v-col class="black-text left" cols="10" >
+                        <h3>{{project.name}}</h3>
                       </v-col>
-                      <v-col md='8' sm="6" class="black-text left" cols="12" >
+                      <v-col class="black-text left" cols="2" >
+                        <h4>Downloads: {{project.stock}}</h4>
+                      </v-col>
+                      <v-col class="black-text left" cols="12" >
                         {{project.description}}
                       </v-col>
                       <v-col class="padding0 left" v-for="doc in project.documents" :key="doc.name" cols="3" sm='6' md='2'>
@@ -120,14 +123,17 @@
                     <p class="left black-text font-weight-bold mb-3">Your newest upload projects:</p>
                   </v-card-title>
                   <v-card-text class="center">
-                    <v-row class='margin-about' :key="'up'+keys" v-for="(upload,keys) in userdata.uploads">
-                      <v-col md='4' sm="6" class="black-text left" cols="12" >
-                        <h4>{{upload.name}}</h4>
+                    <v-row class='margin-about' :key="'proj'+key" v-for="(project,key) in userdata.uploads">
+                      <v-col class="black-text left" cols="10" >
+                        <h3>{{project.name}}</h3>
                       </v-col>
-                      <v-col md='8' sm="6" class="black-text left" cols="12" >
-                        {{upload.description}}
+                      <v-col class="black-text left" cols="2" >
+                        <h4>Downloads: {{project.stock}}</h4>
                       </v-col>
-                      <v-col class="padding0 left" v-for="doc in upload.documents" :key="doc.name" cols="3" sm='6' md='2'>
+                      <v-col class="black-text left" cols="12" >
+                        {{project.description}}
+                      </v-col>
+                      <v-col class="padding0 left" v-for="doc in project.documents" :key="doc.name" cols="3" sm='6' md='2'>
                         <a class="left" :href="'https://www.google.com'" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
                       </v-col>
                     </v-row>
@@ -217,7 +223,7 @@
           maxx:5
         };
         let _this = this;
-        console.log(post)
+        //console.log(post)
         
         axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/getuserprojects", post,{
           headers: this.headers
@@ -226,8 +232,10 @@
           if(result.status==200&&result.data.productos&&result.data.productos.length>0) {
             _this.userdata.projects=[]
             _this.userdata.uploads=[]
+            
             result.data.productos.forEach(element => {
               let arr = element.documentos.split(';')
+              
               let arr2=[]
               arr.forEach(e=>{
                 let x = e.split(',');
@@ -235,9 +243,9 @@
               })
               arr2.pop()
               if(element.cloned){
-                _this.userdata.projects.push({'name':element.name,'description':element.description,'documents':arr2})
+                _this.userdata.projects.push({'name':element.name,'description':element.description,'documents':arr2,'stock':element.stock})
               }else{
-                _this.userdata.uploads.push({'name':element.name,'description':element.description,'documents':arr2})
+                _this.userdata.uploads.push({'name':element.name,'description':element.description,'documents':arr2,'stock':element.stock})
               }
             });
             console.log(this.userdata)            

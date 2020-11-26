@@ -1,17 +1,16 @@
 <template>
     <span id='start'>
-        <cloned-page></cloned-page>
-        
+        <new-project-page/>
     </span>
 </template>
 
 <script>
-import ClonedPage from '@/components/Products/ClonedPage';
+import NewProjectPage from '@/components/Products/NewProjectPage';
 
 export default {
-    name: 'Cloned',
+    name: 'NewProject',
     components: {
-        ClonedPage,
+        NewProjectPage,
     }
 };
 </script>

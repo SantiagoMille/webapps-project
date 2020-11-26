@@ -1,16 +1,7 @@
 <template>
     <span id='start'>
         <main-page></main-page>
-        <v-btn
-            class='margin'
-            absolute
-            fixed
-            fab
-            bottom
-            right
-            @click="$vuetify.goTo('#start')">
-            <v-icon>mdi-arrow-up</v-icon>
-        </v-btn>
+        
     </span>
 </template>
 

@@ -86,14 +86,14 @@
         <section class='background' id="about-me">
 
           <v-container class=" container text-center less-margin">
-            <h2 class="left black-text font-weight-bold mb-3">Your cloned projects</h2>
+            <h1 class="left black-text font-weight-bold mb-3">Your cloned projects</h1>
 
             <span v-for="project in user.projects" :key="project.name">
               <v-card  target="_blank" elevation="0.5" max-width="100%">
                 <v-row>
                   <v-col cols="12">
                     <v-card-title class="text margin_12 no-padding">
-                      <h3 class="left black-text font-weight-bold mb-3 no-padding">{{project.name}}</h3>
+                      <h5 class="left black-text font-weight-bold mb-3">{{project.name}} ({{project.stock}})</h5>
                     </v-card-title>
                     <v-card-subtitle class="left magin_12">
                       {{project.description}}
@@ -180,7 +180,7 @@
               })
               arr2.pop()
               if(element.cloned){
-                _this.user.projects.push({'name':element.name,'description':element.description,'documents':arr2})
+                _this.user.projects.push({'name':element.name,'description':element.description,'documents':arr2,'stock':element.stock})
               }
             });
             console.log(this.user)            

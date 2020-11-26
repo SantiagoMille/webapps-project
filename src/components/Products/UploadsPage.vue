@@ -90,18 +90,13 @@
               <v-col cols="8" md="11">
               <h2 class="left black-text font-weight-bold mb-3">Your uploaded projects</h2>
               </v-col>
-              <v-col cols="4" md="1">
-                <v-btn class="buttonn" v-on:click="search()" depressed color="#FF5D73">
-                  <div class="buttonn">Search</div>
-                </v-btn>
-              </v-col>
             </v-row>
             <span v-for="project in user.uploads" :key="project.name">
               <v-card  target="_blank" elevation="0.5" max-width="100%">
                 <v-row>
                   <v-col cols="12">
                     <v-card-title class="text margin_12 padding0">
-                      <h3 class="left black-text font-weight-bold mb-3">{{project.name}}</h3>
+                      <h5 class="left black-text font-weight-bold mb-3">{{project.name}} ({{project.stock}})</h5>
                     </v-card-title>
                     <v-card-subtitle class="left magin_12">
                       {{project.description}}
@@ -188,8 +183,9 @@
                 arr2.push({"name":x[0],"size":x[1]})
               })
               arr2.pop()
+              console.log(element)
               if(!element.cloned){
-                _this.user.uploads.push({'name':element.name,'description':element.description,'documents':arr2})
+                _this.user.uploads.push({'name':element.name,'description':element.description,'documents':arr2,'stock':element.stock})
               }
             });
             console.log(this.user)            

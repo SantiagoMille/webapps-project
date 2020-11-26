@@ -74,7 +74,7 @@ const router = new VueRouter({
     {
       path: "/newproject",
       name: "AddProject",
-      component: () => import("@/views/Home")
+      component: () => import("@/views/NewProject")
     },
   ],
   mode: "history"
