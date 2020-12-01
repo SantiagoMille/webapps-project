@@ -166,7 +166,8 @@
         if(this.password) {
           let post = {
             password: this.password,
-            users: this.name
+            users: this.name,
+            mail:false
           };
           let _this = this;
           console.log(post);
