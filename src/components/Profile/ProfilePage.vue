@@ -108,7 +108,7 @@
                         </v-row>
                         <span v-else>
                           <span v-if="element[0]=='password'">
-                            <p v-if="!edit">{{"******"+element[1][element[1].length-1]}}</p>
+                            <p v-if="!edit">{{"********"}}</p>
                             <v-text-field v-else
                               type="text"
                               :id="user[element[0]]"
@@ -192,38 +192,8 @@
         "name":"Rodrigo Cabrera Pliego",
         "username":"rocapl",
         "email":"rodrigo@amazon.com",
-        "password":"1234567",
-        "uploads":[{
-            "name":"Sumo Robot",
-            "description":"This a chassis and code for a mini sumo robot.",
-            "documents":[{
-              "name":"chassis.stl",
-              "size":2889
-            }]
-          },{
-            "name":"Sumo Roboot",
-            "description":"This a chassis and code for a mini sumo robot.",
-            "documents":[{
-              "name":"chassis.stl",
-              "size":2889
-            }]
-          }],
-        "projects":[{
-            "name":"Quadruped Robot",
-            "description":"This is the structure, mechanics and code for a quadruped robot built in wood",
-            "documents":[{
-              "name":"leg.stl",
-              "size":2889
-            },
-            {
-              "name":"chassis.stl",
-              "size":28889
-            },
-            {
-              "name":"code.c",
-              "size":289
-            }]
-          }]
+        "password":"*********",
+        
         },
       }
     ),
@@ -238,6 +208,30 @@
       }
       this.user.name = this.saveduser.user.fullName
       this.user.username = this.saveduser.user.username
+      console.log(this.saveduser)
+
+      let post = {
+        mail: true,
+        password: 'null',
+        users:this.user.username
+      };
+      let _this = this;
+      
+      console.log(post);
+      
+      axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/consult-mail", post,{
+        headers: this.headers
+      }).then((result) => {
+        console.log(result)
+        if(result.status==200 &&result.data.statusCode && result.data.statusCode==200) {
+          _this.user.email=result.data.body
+        }else{
+          alert("There was an error in the network!: "+result.data.body)
+        }
+      }).catch(error => {
+          alert(error)
+      });
+
     },
     methods:{
       logout(){

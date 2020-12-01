@@ -85,7 +85,7 @@
                   <v-card>
                     <v-card-title class="headline">Oops!</v-card-title>
                     <v-card-text>
-                      Looks like this email is no registered under any account. Double check!
+                      Looks like this username is no registered under any account. Double check!
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>

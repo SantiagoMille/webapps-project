@@ -94,7 +94,7 @@
             <span v-for="project in user.uploads" :key="project.name">
               <v-card  target="_blank" elevation="0.5" max-width="100%">
                 <v-row>
-                  <v-col cols="12">
+                  <v-col cols="12" md='7'>
                     <v-card-title class="text margin_12 padding0">
                       <h5 class="left black-text font-weight-bold mb-3">{{project.name}} ({{project.stock}})</h5>
                     </v-card-title>
@@ -103,11 +103,14 @@
                     </v-card-subtitle>
                     <v-card-text class="left">
                       <v-row class="margin_0">
-                        <v-col class="padding0" v-for="doc in project.documents" :key="doc.name" cols="3" sm='6' md='2'>
-                          <a class="" :href="doc.url" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
+                        <v-col class="padding0" v-for="doc in project.documents" :key="doc.name" cols="6" sm='6' md='4'>
+                          <a class="link" :href="doc.url" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
                         </v-col>
                       </v-row>
                     </v-card-text>
+                  </v-col>
+                  <v-col cols="12" md='5'>
+                    <v-img class='img' contain max-height="225px" :src="project.img"/>
                   </v-col>
                 </v-row>
               </v-card>
@@ -163,7 +166,8 @@
     methods:{
       getProjects(){
         let post = {
-          user: this.user.username,
+          //user: this.user.username,
+          token:this.userr.user.token,
           maxx:1
         };
         let _this = this;
@@ -171,8 +175,11 @@
         axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/getuserprojects", post,{
           headers: this.headers
         }).then((result) => {
-
-          if(result.status==200&&result.data.productos&&result.data.productos.length>0) {
+          if(result.status==200&&result.data.logout){
+            this.$store.commit("setUser", {});
+            router.push('/');
+          }
+          else if(result.status==200&&result.data.productos&&result.data.productos.length>0) {
             _this.user.projects=[]
             _this.user.uploads=[]
             result.data.productos.forEach(element => {
@@ -185,7 +192,7 @@
               arr2.pop()
               console.log(element)
               if(!element.cloned){
-                _this.user.uploads.push({'name':element.name,'description':element.description,'documents':arr2,'stock':element.stock})
+                _this.user.uploads.push({'name':element.name,'description':element.description,'documents':arr2,'stock':element.stock, 'img':element.img})
               }
             });
             console.log(this.user)            
@@ -219,6 +226,11 @@
 
 .padding0{
   padding: 0;
+}
+
+.link{
+  text-decoration-line: none;
+  color: #96CDFF;
 }
 
 .buttonn {

@@ -125,7 +125,7 @@
           <div class="py-12"></div>
 
           <v-container  class="text-center less-margin">
-            <h2 class="display-2 black-text font-weight-bold mb-3">ABOUT THE PROYECT</h2>
+            <h2 class="display-2 black-text font-weight-bold mb-3 page-title">ABOUT THE PROYECT</h2>
 
             <v-responsive class="mx-auto mb-8" width="56">
               <v-divider class="mb-1"></v-divider>
@@ -135,13 +135,32 @@
             <v-row class='margin-about'>
     
               <v-col class="black-text" cols="12">
-                <h4 class='aboutPro' id='about'>
-                  We aim to be hub where you can find open-source projects about virtually anything:
-                
-                  We love applied science and technology. We also know how important is it for progress so share. 
+                <h3 class='aboutPro' id='about'>
+                  We are a hub where you can find open-source projects about virtually anything. 
+                  We love applied science and technology and know how important it is to share this knowledge with the community. 
                   We created this platform to share open-source projects so that anyone can download, modify and implement them.
+                  <br>
+                  <br>
+                  Progress can only be achieved when we share.
               
-                </h4>
+                </h3>
+              </v-col>
+            </v-row>
+            <v-row class='margin-about'>
+              <v-col class="black-text" cols="12" md="6">
+                <v-img
+                  contain
+                  max-height="50%"
+                  src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/7195e121-eded-45cf-9aab-909deebd81b2/d9ur2lg-28410b47-58fd-4a48-9b67-49c0f56c68ce.png/v1/fill/w_1035,h_772,q_70,strp/mit_license_logo_by_excaliburzero_d9ur2lg-pre.jpg"
+                ></v-img>
+                <v-img
+                  contain
+                  max-height="50%"
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Opensource.svg/724px-Opensource.svg.png"
+                ></v-img>
+              </v-col>
+              <v-col class="black-text" cols="12" md="6">
+                <Timeline widget-class="mt-3 my-custom-class twitter" id="santimillef" sourceType="profile" :options="{ tweetLimit: '3' }" />
               </v-col>
             </v-row>
           </v-container>
@@ -159,6 +178,7 @@
 </template>
 
 <script>
+import {Timeline} from 'vue-tweet-embed'
   export default {
     name: 'HomePage',
 
@@ -172,6 +192,9 @@
       drawer:false
     
     }),
+    components:{
+      Timeline
+    },
     mounted(){
       this.repeatTimeout(0);
     },
@@ -233,13 +256,17 @@
 }
 
 .background{
-  background:#dedede
+  background:#ffffff;/*#dedede*/
 }
 
 .padding-top{
   padding-top: 70px;
   padding-bottom: 0;
   margin-bottom: -5rem; 
+}
+
+.page-title{
+  font-size: 2rem !important;
 }
 
 .v-list-item{

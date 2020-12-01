@@ -156,7 +156,7 @@
               <v-row justify="center" width="100px">
                 <v-dialog v-model="dialogGood" persistent max-width="390">
                   <v-card>
-                    <v-card-title class="headline">Password updated!</v-card-title>
+                    <v-card-title class="headline">User created!</v-card-title>
                     <v-card-text>
                       Check your email and let's get started!
                     </v-card-text>

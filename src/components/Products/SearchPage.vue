@@ -100,7 +100,7 @@
                 </v-text-field>
               </v-col>
               <v-col cols="2" md="1">
-                <v-btn v-on:click="search()" depressed color="#FF5D73">
+                <v-btn v-on:click="search()" depressed color="#96CDFF">
                   <div class="button">Search</div>
                 </v-btn>
               </v-col>
@@ -109,8 +109,8 @@
             <span v-for="project in products" :key="project.name">
               <v-card  target="_blank" elevation="0.5" max-width="100%">
                 <v-row>
-                  <v-col cols="12">
-                    <v-card-title class="text margin_12">
+                  <v-col cols="12" md='7'>
+                    <v-card-title class="text margin_12 no-padding">
                       <h3 class="left black-text font-weight-bold mb-3">{{project.name}}</h3>
                     </v-card-title>
                     <v-card-subtitle class="left magin_12">
@@ -123,6 +123,14 @@
                         </v-col>
                       </v-row>
                     </v-card-text>
+                  </v-col>
+                  <v-col cols="11" md='4'>
+                    <v-img class='img' contain max-height="225px" :src="project.img"/>
+                  </v-col>
+                  <v-col v-if="project.user!=user.username" cols="1">
+                    <v-btn class="bar-b" icon style="color:white" v-on:click="download(project)">
+                      <v-icon color="#cccccc" large>mdi-download</v-icon>
+                    </v-btn>
                   </v-col>
                 </v-row>
               </v-card>
@@ -177,19 +185,25 @@
       if(this.user==null){
         router.push('/');
       }
-      console.log(this.user)
+      //console.log(this.user)
 
       let post = {
         cadena: '',
-        max:1
+        max:4,
+        token:this.user.token
       };
       let _this = this;
       
       axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/get-products", post,{
         headers: this.headers
       }).then((result) => {
-        if(result.status==200 &&result.data.productos) {
-          console.log(result.data.productos)
+        console.log(result)
+        if(result.status==200&&result.data.logout){
+          this.$store.commit("setUser", {});
+          router.push('/');
+        }
+        else if(result.status==200 &&result.data.productos) {
+          //console.log(result.data.productos)
           _this.products=result.data.productos;
         }
         else{
@@ -202,17 +216,44 @@
       
     },
     methods:{
+      download(p){
+        
+        let post = {
+          id:p.id,
+          user:p.user,
+          token:this.user.token
+        };
+        console.log(post)
+        axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/addtransaction", post,{
+          headers: this.headers
+        }).then((result) => {
+          console.log(result)
+          if(result.status==200 &&result.data.status&&result.data.status==200) {
+            alert('Product added to your account')
+          }
+          else{
+            alert('Please check your connection!')
+          }
+        }).catch(error => {
+            console.log('error',error)
+        });
+      },
       search(){
         let post = {
           cadena: this.value,
-          max:100
+          max:100,
+          token:this.user.token
         };
         let _this = this;
         
         axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/get-products", post,{
           headers: this.headers
         }).then((result) => {
-          if(result.status==200 &&result.data.productos) {
+          if(result.status==200&&result.data.logout){
+            this.$store.commit("setUser", {});
+            router.push('/');
+          }
+          else if(result.status==200 &&result.data.productos) {
             console.log(result.data.productos)
             _this.products=result.data.productos;
           }
@@ -264,6 +305,10 @@
   margin-right: 5px !important;
 }
 
+.no-padding{
+  padding: 0;
+}
+
 .btn{
   color: black !important;
   margin-bottom: 25px;
@@ -273,6 +318,11 @@
   align-content: center;
   text-align: justify !important;
   font-weight: 200;
+}
+
+.link{
+  text-decoration-line: none;
+  color: #96CDFF;
 }
 
 .container{
@@ -296,7 +346,9 @@
   color: white;
 }
 
-
+.img{
+  margin: 10px;
+}
 
 .margin_0{
   margin: 0;

@@ -95,7 +95,7 @@
                     <p class="left black-text font-weight-bold mb-3">Your newest cloned projects:</p>
                   </v-card-title>
                   <v-card-text class="center">
-                    <v-row class='margin-about' :key="'proj'+key" v-for="(project,key) in userdata.projects">
+                    <v-row class='margin-about' :key="'proj'+key" v-for="(project,key) in userdata.projects.slice(userdata.projects.length-2,userdata.projects.length)">
                       <v-col class="black-text left" cols="10" >
                         <h3>{{project.name}}</h3>
                       </v-col>
@@ -106,7 +106,7 @@
                         {{project.description}}
                       </v-col>
                       <v-col class="padding0 left" v-for="doc in project.documents" :key="doc.name" cols="3" sm='6' md='2'>
-                        <a class="left" :href="'https://www.google.com'" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
+                        <a class="left link" :href="'https://www.google.com'" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -123,7 +123,7 @@
                     <p class="left black-text font-weight-bold mb-3">Your newest upload projects:</p>
                   </v-card-title>
                   <v-card-text class="center">
-                    <v-row class='margin-about' :key="'proj'+key" v-for="(project,key) in userdata.uploads">
+                    <v-row class='margin-about' :key="'proj'+key" v-for="(project,key) in userdata.uploads.slice(userdata.uploads.length-2,userdata.uploads.length)">
                       <v-col class="black-text left" cols="10" >
                         <h3>{{project.name}}</h3>
                       </v-col>
@@ -134,7 +134,7 @@
                         {{project.description}}
                       </v-col>
                       <v-col class="padding0 left" v-for="doc in project.documents" :key="doc.name" cols="3" sm='6' md='2'>
-                        <a class="left" :href="'https://www.google.com'" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
+                        <a class="left link" :href="'https://www.google.com'" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -218,9 +218,11 @@
     },
     methods:{
       getProjects(){
+        //console.log(this.user.user.token)
         let post = {
-          user: this.user.user.username,
-          maxx:5
+          //user: this.user.user.username,
+          maxx:5,
+          token: this.user.user.token
         };
         let _this = this;
         //console.log(post)
@@ -228,8 +230,11 @@
         axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/getuserprojects", post,{
           headers: this.headers
         }).then((result) => {
-
-          if(result.status==200&&result.data.productos&&result.data.productos.length>0) {
+          if(result.status==200&&result.data.logout){
+            this.$store.commit("setUser", {});
+            router.push('/');
+          }
+          else if(result.status==200&&result.data.productos&&result.data.productos.length>0) {
             _this.userdata.projects=[]
             _this.userdata.uploads=[]
             
@@ -242,13 +247,14 @@
                 arr2.push({"name":x[0],"size":x[1]})
               })
               arr2.pop()
+              //console.log(element)
               if(element.cloned){
                 _this.userdata.projects.push({'name':element.name,'description':element.description,'documents':arr2,'stock':element.stock})
               }else{
                 _this.userdata.uploads.push({'name':element.name,'description':element.description,'documents':arr2,'stock':element.stock})
               }
             });
-            console.log(this.userdata)            
+            //console.log(this.userdata)            
           }else{
             alert("No items for this user!")
           }
@@ -305,6 +311,11 @@
 
 .less-margin{
   margin: auto;
+}
+
+.link{
+  text-decoration-line: none;
+  color: #96CDFF;
 }
 
 .margin-about{

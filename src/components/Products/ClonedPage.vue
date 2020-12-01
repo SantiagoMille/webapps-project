@@ -91,7 +91,7 @@
             <span v-for="project in user.projects" :key="project.name">
               <v-card  target="_blank" elevation="0.5" max-width="100%">
                 <v-row>
-                  <v-col cols="12">
+                  <v-col cols="12" md="7">
                     <v-card-title class="text margin_12 no-padding">
                       <h5 class="left black-text font-weight-bold mb-3">{{project.name}} ({{project.stock}})</h5>
                     </v-card-title>
@@ -100,11 +100,15 @@
                     </v-card-subtitle>
                     <v-card-text class="left">
                       <v-row class="margin_0">
-                        <v-col class="padding0" v-for="doc in project.documents" :key="doc.name" cols="3" sm='6' md='2'>
-                          <a class="" :href="doc.url" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
+                        <v-col class="padding0" v-for="doc in project.documents" :key="doc.name" cols="6" sm='6' md='4'>
+                          <a class="link" :href="doc.url" target="_blank">{{doc.name+' ('+doc.size+') '}}</a>
                         </v-col>
+
                       </v-row>
                     </v-card-text>
+                  </v-col>
+                  <v-col cols="12" md='4'>
+                    <v-img class='img' contain max-height="225px" :src="project.img"/>
                   </v-col>
                 </v-row>
               </v-card>
@@ -161,15 +165,19 @@
       getProjects(){
         let post = {
           user: this.user.username,
-          maxx:10
+          maxx:10,
+          token:this.userr.user.token
         };
         let _this = this;
         
         axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/getuserprojects", post,{
           headers: this.headers
         }).then((result) => {
-
-          if(result.status==200&&result.data.productos&&result.data.productos.length>0) {
+          if(result.status==200&&result.data.logout){
+            this.$store.commit("setUser", {});
+            router.push('/');
+          }
+          else if(result.status==200&&result.data.productos&&result.data.productos.length>0) {
             _this.user.projects=[]
             result.data.productos.forEach(element => {
               let arr = element.documentos.split(';')
@@ -178,9 +186,10 @@
                 let x = e.split(',');
                 arr2.push({"name":x[0],"size":x[1]})
               })
+              //console.log(element)
               arr2.pop()
               if(element.cloned){
-                _this.user.projects.push({'name':element.name,'description':element.description,'documents':arr2,'stock':element.stock})
+                _this.user.projects.push({'name':element.name,'description':element.description,'documents':arr2,'stock':element.stock,'img':element.img})
               }
             });
             console.log(this.user)            
@@ -225,6 +234,11 @@
   padding: 0;
 }
 
+.link{
+  text-decoration-line: none;
+  color: #96CDFF;
+}
+
 .v-list-item{
   min-height: fit-content !important;
 }
@@ -241,6 +255,10 @@
   align-content: center;
   text-align: justify !important;
   font-weight: 200;
+}
+
+.img{
+  margin: 10px;
 }
 
 .container{

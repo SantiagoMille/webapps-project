@@ -2,6 +2,44 @@
   <div id="app">
     <v-app>
 
+      <v-navigation-drawer
+        v-model="drawer"
+        absolute
+        class="drawer"
+        temporary>
+        <v-list nav dense>
+        
+          <v-list-item href="./profile">
+            <v-list-item-icon>
+              <v-icon>mdi-account</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Profile</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item href="./myuploads">
+            <v-list-item-icon>
+              <v-icon>mdi-cloud-upload</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>My uploads</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item href="./dashboard">
+            <v-list-item-icon>
+              <v-icon>mdi-home</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Dashboard</v-list-item-title>
+          </v-list-item>
+
+          <v-list-item href="./search">
+            <v-list-item-icon>
+              <v-icon>mdi-magnify</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Search</v-list-item-title>
+          </v-list-item>
+
+        </v-list>
+      </v-navigation-drawer>
+
       <v-app-bar 
         app
         color="#FF5D73"
@@ -9,7 +47,7 @@
         scroll-threshold='5'
         clipped-right
         elevation="0">
-        <a href = './'><v-avatar
+        <a href = './dashboard'><v-avatar
 
           class="mr-3"
           color="#FF5D73"
@@ -24,6 +62,22 @@
         <h1 class="titlee">Open Sourx</h1>
         
         <v-spacer></v-spacer>
+
+        <v-btn class="bar-b" title="Log out" href='./search' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
+          <v-icon large>mdi-magnify</v-icon>
+        </v-btn>
+        <v-btn class="bar-b" title="Uploads" href='./myuploads' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
+          <v-icon large>mdi-cloud-upload</v-icon>
+        </v-btn>
+        <v-btn class="bar-b" title="Dashboard" href='./dashboard' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
+          <v-icon large>mdi-home</v-icon>
+        </v-btn>
+        <v-btn class="bar-b" title="Profile" href='./profile' v-if="$vuetify.breakpoint.mdOnly||$vuetify.breakpoint.lgOnly||$vuetify.breakpoint.xlOnly" icon style="color:white">
+          <v-icon large>mdi-account</v-icon>
+        </v-btn>
+        <v-btn class="bar-b" v-if="$vuetify.breakpoint.smOnly||$vuetify.breakpoint.xsOnly" icon style="color:white" @click="drawer = !drawer">
+          <v-icon large>mdi-menu</v-icon>
+        </v-btn>
 
       </v-app-bar>
 
@@ -52,6 +106,9 @@
               </v-col>
               <v-col v-if="newItem.filesB" cols="12">
                 <v-file-input multiple v-model="newItem.files" label="Files:"></v-file-input>
+              </v-col>
+              <v-col md='9' sm='8' cols="12">
+                <v-text-field v-model="newItem.img" label="Image link"></v-text-field>
               </v-col>
               <v-col cols="12">
                 <v-btn color="white" elevation="1" @click="create">Add</v-btn>
@@ -122,7 +179,7 @@
     data: () => ({
       errors:[],
 
-      newItem:{title:null,files:null,filesB:null,description:null},
+      newItem:{title:null,files:null,filesB:null,description:null,img:null},
       user:null,
       dialog:false,
       dialogGood:false,
@@ -147,21 +204,29 @@
         let updatedItem = {};
         Object.assign(updatedItem, this.newItem);
         updatedItem.stock = 1;
-        updatedItem.files=[];
-        this.newItem.files.forEach((v, i) => {
-          updatedItem.files.push({"name":i+'_'+v.name,"size":v.size});
-        });
+        if(this.newItem.img==null){
+          updatedItem.img=''
+        }else{
+          updatedItem.img=this.newItem.img
+        }
+        updatedItem.files=''
+        if(this.newItem.files!=null){
+          this.newItem.files.forEach((v, i) => {
+            updatedItem.files = updatedItem.files.concat(i+'_'+v.name+','+v.size+';');
+            //updatedItem.files.push({"name":i+'_'+v.name,"size":v.size});
+          });
+        }
         let post = {
           project: updatedItem,
           user:this.user.user
         };
         let _this = this;
-        
+        console.log(post)
         axios.post("https://45gckbtf03.execute-api.us-east-1.amazonaws.com/default/newelement", post,{
             headers: this.headers
           }).then((result) => {
             console.log(result)
-            if(result.status==200 &&result.data.statusCode && result.data.statusCode==200) {
+            if(result.status==200 &&result.data.status && result.data.status==200) {
               _this.dialogGood=true;
             }else{
               _this.dialog=true;
